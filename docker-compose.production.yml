@@ -1,12 +1,25 @@
 
 services:
+  database_production:
+    image: database_production
+    container_name: Mini_Tweeter_database_production
+    restart: always
+    environment:
+      POSTGRES_DB: mini_tweeter_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - Mini-Tweeter-network
+
   migrate_production:
     container_name: Mini_Tweeter_users_service_migrate_production
     image: migrate/migrate:v4.15.2
     volumes:
       - ./migrations:/migrations
     environment:
-      - POSTGRES_HOST=localhost
+      - POSTGRES_HOST=database_production
       - POSTGRES_PORT=5432
       - POSTGRES_DATABASE=mini_tweeter_db
       - POSTGRES_USER=postgres
@@ -28,7 +41,7 @@ services:
       - ENVIRONMENT=develop
       - RPC_PORT=8082
       - HTTP_PORT=8008
-      - POSTGRES_HOST=localhost
+      - POSTGRES_HOST=database_production
       - POSTGRES_PORT=5432
       - POSTGRES_DATABASE=mini_tweeter_db
       - POSTGRES_USER=postgres
