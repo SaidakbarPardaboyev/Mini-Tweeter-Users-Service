@@ -24,7 +24,7 @@ services:
       - POSTGRES_DATABASE=mini_tweeter_db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-    entrypoint: migrate -path migrations/ -database "postgres://postgres:postgres@database:5432/mini_tweeter_db?sslmode=disable"
+    entrypoint: migrate -path migrations/ -database "postgres://postgres:postgres@database_staging:5432/mini_tweeter_db?sslmode=disable"
     command: up
     restart: on-failure
     networks:
