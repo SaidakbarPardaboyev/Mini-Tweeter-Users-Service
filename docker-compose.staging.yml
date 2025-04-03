@@ -1,7 +1,7 @@
 
 services:
   database_staging:
-    image: database_staging
+    image: postgres:15
     container_name: Mini_Tweeter_database_staging
     restart: always
     environment:
