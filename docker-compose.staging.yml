@@ -10,6 +10,8 @@ services:
       POSTGRES_PASSWORD: postgres
     ports:
       - "6432:5432"
+    volumes:
+      - postgres_data_staging:/var/lib/postgresql/data
     networks:
       - Mini-Tweeter-network
 
@@ -70,6 +72,7 @@ services:
 
 volumes:
   redis_data_staging:
+  postgres_data_staging:
 
 networks:
   Mini-Tweeter-network:
