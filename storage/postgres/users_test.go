@@ -72,7 +72,7 @@ func TestGetUserWithLogin(t *testing.T) {
 	}
 
 	resp, err := userRepo.GetUserWithLogin(context.Background(), &pb.GetUserWithUsernameRequest{
-		Username: "saidakbarpardaboyev",
+		Username: "string",
 	})
 	if err != nil {
 		t.Error(fmt.Errorf("error creating user: %v", err))

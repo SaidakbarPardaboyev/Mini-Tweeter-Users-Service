@@ -110,7 +110,7 @@ func (u *users) GetUserWithLogin(ctx context.Context, in *pb.GetUserWithUsername
 		&updatedAt,
 	)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if err == sql.ErrNoRows || err.Error() == "no rows in result set" {
 			return nil, errors.New("user not found")
 		}
 		return nil, fmt.Errorf("error getting user: %v", err)
