@@ -69,7 +69,7 @@ type Postgres struct {
 // 	}
 // }
 
-func New(cfg *config.Config) (*Postgres, error) {
+func NewPostgresDB(cfg *config.Config) (*Postgres, error) {
 	response := &Postgres{}
 
 	connString := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable", cfg.PostgresUser, cfg.PostgresPassword, cfg.PostgresHost, cfg.PostgresPort, cfg.PostgresDatabase)

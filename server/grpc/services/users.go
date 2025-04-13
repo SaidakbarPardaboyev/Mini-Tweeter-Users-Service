@@ -33,7 +33,24 @@ func (s *UsersService) CreateUser(ctx context.Context, in *pb.CreateUserRequest)
 		return nil, err
 	}
 
-	return s.storage.Users().CreateUser(ctx, in.User)
+	userCreatePG, err := s.storage.Users().CreateUser(ctx, in.User)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = s.storage.FollowUnFollow().CreateUser(ctx, &pb.User{
+		Id:           userCreatePG.Id,
+		Name:         in.User.Name,
+		Surname:      in.User.Surname,
+		Bio:          in.User.Bio,
+		ProfileImage: in.User.ProfileImage,
+		Username:     in.User.Username,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return userCreatePG, nil
 }
 
 func (s *UsersService) GetUser(ctx context.Context, in *pb.GetUserRequest) (*pb.User, error) {
@@ -59,11 +76,21 @@ func (s *UsersService) UpdateUser(ctx context.Context, in *pb.UpdateUserRequest)
 		return &pb.UpdateUserResponse{Success: false}, err
 	}
 
+	err = s.storage.FollowUnFollow().UpdateUser(ctx, in.User)
+	if err != nil {
+		return &pb.UpdateUserResponse{Success: false}, err
+	}
+
 	return &pb.UpdateUserResponse{Success: true}, nil
 }
 
 func (s *UsersService) DeleteUser(ctx context.Context, in *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
 	err := s.storage.Users().DeleteUser(ctx, in.Id)
+	if err != nil {
+		return &pb.DeleteUserResponse{Success: false}, err
+	}
+
+	err = s.storage.FollowUnFollow().DeleteUser(ctx, in.Id)
 	if err != nil {
 		return &pb.DeleteUserResponse{Success: false}, err
 	}

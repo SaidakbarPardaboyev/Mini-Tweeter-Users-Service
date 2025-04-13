@@ -18,7 +18,7 @@ func Init() (repo.UsersRepo, error) {
 	fmt.Println(cfg.PostgresPassword)
 
 	log := logger.New(cfg.Environment, "users_service_grpc")
-	psql, err := db.New(cfg)
+	psql, err := db.NewPostgresDB(cfg)
 	if err != nil {
 		return nil, fmt.Errorf("error while connecting to database: %v", err)
 	}

@@ -60,7 +60,7 @@ services:
 
   redis_staging:
     image: redis:latest
-    container_name: Mini_Tweeter_redis_staring
+    container_name: Mini_Tweeter_redis_staging
     restart: always
     ports:
       - "6379:6379"

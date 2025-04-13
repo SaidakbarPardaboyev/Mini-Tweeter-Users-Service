@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
+
 	pb "github.com/SaidakbarPardaboyev/Mini-Tweeter-Users-Service/genproto/users_service"
 
 	"github.com/SaidakbarPardaboyev/Mini-Tweeter-Users-Service/config"
@@ -22,18 +24,23 @@ type GRPCService struct {
 	UsersService pb.UserServiceServer
 }
 
-func New(cfg *config.Config, log logger.Logger) (*GRPCService, error) {
-	psql, err := db.New(cfg)
+func New(cfg *config.Config, log logger.Logger) (*GRPCService, neo4j.Driver, neo4j.Session, error) {
+	psql, err := db.NewPostgresDB(cfg)
 	if err != nil {
-		return nil, fmt.Errorf("error while connecting to database: %v", err)
+		return nil, nil, nil, fmt.Errorf("error while connecting to database: %v", err)
 	}
-
-	storageObj := storage.New(psql, log, cfg)
 
 	grpcClient, err := client.NewGrpcClients(cfg)
 	if err != nil {
-		return nil, fmt.Errorf("error while connecting with grpc clients: %v", err)
+		return nil, nil, nil, fmt.Errorf("error while connecting with grpc clients: %v", err)
 	}
+
+	driverNeo4j, sessionNeo4j, err := db.NewDgraphClient(cfg)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	storageObj := storage.New(psql, sessionNeo4j, log, cfg)
 
 	serviceOptions := &services.ServiceOptions{
 		ServiceManager: grpcClient,
@@ -44,7 +51,7 @@ func New(cfg *config.Config, log logger.Logger) (*GRPCService, error) {
 
 	return &GRPCService{
 		UsersService: services.NewUsersService(serviceOptions),
-	}, nil
+	}, driverNeo4j, sessionNeo4j, nil
 }
 
 func (service *GRPCService) Run(logger logger.Logger, cfg *config.Config) {

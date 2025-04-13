@@ -10,12 +10,14 @@ import (
 func main() {
 	cfg := config.Load()
 	log := logger.New(cfg.Environment, "users_service_grpc")
-	
-	grpcServices, err := grpc.New(cfg, log)
+
+	grpcServices, dgraphDriver, dgraphSession, err := grpc.New(cfg, log)
 	if err != nil {
 		log.Error("Error while initializing grpcServices", logger.Error(err))
 		return
 	}
+	defer dgraphDriver.Close()
+	defer dgraphSession.Close()
 
 	httpServer, err := httpserver.New(cfg, log, grpcServices)
 	if err != nil {
