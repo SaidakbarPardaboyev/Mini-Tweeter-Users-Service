@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "6432:5432"
+      - "6432:5432"  # Host:Container
     volumes:
       - postgres_data_staging:/var/lib/postgresql/data
     networks:
@@ -26,9 +26,10 @@ services:
       - POSTGRES_DATABASE=mini_tweeter_db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-    entrypoint: migrate -path migrations/ -database "postgres://postgres:postgres@database_staging:5432/mini_tweeter_db?sslmode=disable"
-    command: up
+    entrypoint: ["/bin/sh", "-c", "sleep 5 && migrate -path migrations/ -database 'postgres://postgres:postgres@database_staging:5432/mini_tweeter_db?sslmode=disable' up"]
     restart: on-failure
+    depends_on:
+      - database_staging
     networks:
       - Mini-Tweeter-network
 
