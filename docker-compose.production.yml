@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data_production:/var/lib/postgresql/data
     networks:
@@ -63,7 +63,7 @@ services:
     container_name: Mini_Tweeter_redis_production
     restart: always
     ports:
-      - "6379:6379"
+      - "7379:6379"
     networks:
       - Mini-Tweeter-network
     command: ["redis-server", "--appendonly", "yes"]
