@@ -21,7 +21,8 @@ import (
 )
 
 type GRPCService struct {
-	UsersService pb.UserServiceServer
+	UsersService     pb.UserServiceServer
+	FollowingService pb.FollowingServiceServer
 }
 
 func New(cfg *config.Config, log logger.Logger) (*GRPCService, neo4j.Driver, neo4j.Session, error) {
@@ -50,7 +51,8 @@ func New(cfg *config.Config, log logger.Logger) (*GRPCService, neo4j.Driver, neo
 	}
 
 	return &GRPCService{
-		UsersService: services.NewUsersService(serviceOptions),
+		UsersService:     services.NewUsersService(serviceOptions),
+		FollowingService: services.NewFollowUnFollowService(serviceOptions),
 	}, driverNeo4j, sessionNeo4j, nil
 }
 
@@ -58,6 +60,7 @@ func (service *GRPCService) Run(logger logger.Logger, cfg *config.Config) {
 	server := grpc.NewServer()
 
 	pb.RegisterUserServiceServer(server, service.UsersService)
+	pb.RegisterFollowingServiceServer(server, service.FollowingService)
 
 	listener, err := net.Listen("tcp", ":"+cfg.RPCPort)
 	if err != nil {

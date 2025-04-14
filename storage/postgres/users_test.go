@@ -56,7 +56,7 @@ func TestGetUser(t *testing.T) {
 	}
 
 	resp, err := userRepo.GetUser(context.Background(), &pb.GetUserRequest{
-		Id: "4ea5c837-6843-43a9-84b8-08809a413a3a",
+		Id: "5d8e4c65-c42e-48f5-a98a-39a51d9e2121",
 	})
 	if err != nil {
 		t.Error(fmt.Errorf("error creating user: %v", err))

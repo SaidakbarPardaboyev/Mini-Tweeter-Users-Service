@@ -18,6 +18,7 @@ type ServiceOptions struct {
 }
 
 func validatingUser(in *pb.User) (bool, error) {
+	fmt.Println(in.Name)
 
 	if in.Name == "" || len(in.Name) < 3 {
 		return false, fmt.Errorf("name must be at least 3 characters")
