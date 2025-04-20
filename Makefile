@@ -17,7 +17,7 @@ migrate-down:
 	migrate -path migrations -database "$(DB_URL)" -verbose down 
 
 migrate-file:
-	migrate create -ext sql -dir migrations/ -seq create_tables
+	migrate create -ext sql -dir migrations/ -seq create_indexes
 
 migrate-force:
 	migrate -path migrations -database "$(DB_URL)" -verbose force 14
